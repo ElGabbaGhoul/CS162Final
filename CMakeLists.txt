@@ -3,4 +3,9 @@ project(CSFinal)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(CSFinal main.cpp)
+add_executable(CSFinal main.cpp
+        MonsterClass.cpp
+        MonsterClass.hpp
+        RandomGeneration.cpp
+        RandomGeneration.hpp
+)
