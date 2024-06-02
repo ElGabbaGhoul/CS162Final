@@ -8,4 +8,6 @@ add_executable(CSFinal main.cpp
         MonsterClass.hpp
         RandomGeneration.cpp
         RandomGeneration.hpp
+        GraphicsEngine.cpp
+        GraphicsEngine.hpp
 )
