@@ -3,7 +3,7 @@
 //
 
 #include "RandomGeneration.hpp"
-#include <cstdlib>
+#include <random>
 #include <iostream>
 
 void createDungeon(char dungeon[][DUNGEON_SIZE], int bLoc[2], int gLoc[2], int eLoc[2], int mLoc[2], int bombs, int gold, int monsters, char itemChar){
@@ -30,18 +30,24 @@ void createDungeon(char dungeon[][DUNGEON_SIZE], int bLoc[2], int gLoc[2], int e
     }
 // Place Exit
     genRandCoords(dungeon, eLoc, 'E');
-
+    std::string dungeonName = generateDungeonName();
     std::cout << "Dungeon Created! Now prepare yourself to face..." << std::endl;
-    displayDungeonName();
+    std::cout << dungeonName << std::endl;
 }
 
 void displayDungeon(char dungeon[][DUNGEON_SIZE]){
-    for (int y = 0; y < DUNGEON_SIZE; y++){
-        for (int x = 0; x < DUNGEON_SIZE; x++){
-            std::cout << dungeon[x][y];
+    for (int i = 0; i < DUNGEON_SIZE; i++) {
+        for (int j = 0; j < DUNGEON_SIZE; j++) {
+            printf("%c", dungeon[i][j]);
         }
-        std::cout << std::endl;
+        printf("\n");
     }
+//    for (int i = DUNGEON_SIZE - 1; i >= 0; i--) {
+//        for (int j = DUNGEON_SIZE - 1; j >= 0; j--) {
+//            printf("%c", dungeon[i][j]);
+//        }
+//        printf("\n");
+//    }
 }
 
 std::string getCharName() {
@@ -56,13 +62,18 @@ std::string getCharName() {
             std::cin.ignore(40000, '\n');
             std::cout << "Please enter a name with at least 3 characters." << std::endl;
         } else {
-            std::cout << "Greetings, " << player << "." << std::endl;
             validIn = true;
         }
     }
     return player;
 }
-void displayDungeonName() {
+
+//void displayInstructions(const std::string& charName, const std::string& ){
+//    std::cout << ""
+//}
+
+std::string generateDungeonName() {
+    std::string dungeonName;
 
     std::string prefixes[] = {"Howling", "Abandoned", "Damned"};
 
@@ -72,9 +83,9 @@ void displayDungeonName() {
 
     std::string enemies[] = {"Cadavers", "Spirits", "Penguins"};
 
-    std::cout << prefixes[randRange(0,2)] << " " << nouns[randRange(0,2)]
-              << " of the " << suffixes[randRange(0,2)] << " " << enemies[randRange(0,2)] << "!"
-              << std::endl;
+    dungeonName = prefixes[randRange(0,2)] + " " + nouns[randRange(0,2)] + " of the " + suffixes[randRange(0,2)] + " " + enemies[randRange(0,2)] + "!" ;
+
+    return dungeonName;
 }
 
 void genRandCoords(char dungeon[][DUNGEON_SIZE], int coords[2], char itemChar) {
@@ -89,7 +100,9 @@ void genRandCoords(char dungeon[][DUNGEON_SIZE], int coords[2], char itemChar) {
     coords[1] = y;
 }
 
-int randRange(int low, int high) {
-    return rand() % (high - low + 1) + low;
+int randRange(int low, int high){
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(low, high);
+    return dis(gen);
 }
-

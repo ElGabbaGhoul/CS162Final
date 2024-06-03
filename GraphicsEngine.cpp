@@ -3,6 +3,7 @@
 //
 
 #include "GraphicsEngine.hpp"
+#include "RandomGeneration.hpp"
 #include <cmath>
 #include <iostream>
 #include <algorithm>
@@ -36,11 +37,12 @@ void InitializeFPS() {
     ShowWindow(GetConsoleWindow(), SW_SHOW);
 }
 
+// Controls
 void UpdatePlayer(float fElapsedTime, const char dungeon[][16]) {
     if (GetAsyncKeyState((unsigned short)'W') & 0x8000) {
         float newX = fPlayerX + sinf(fPlayerA) * 2.5f * fElapsedTime;
         float newY = fPlayerY + cosf(fPlayerA) * 2.5f * fElapsedTime;
-        if (dungeon[(int)newY][(int)newX] != '#') {
+        if (dungeon[(int)newY][(int)newX] != '#' && newX >= 0 && newX < nMapWidth && newY >= 0 && newY < nMapHeight) {
             fPlayerX = newX;
             fPlayerY = newY;
         }
@@ -49,7 +51,7 @@ void UpdatePlayer(float fElapsedTime, const char dungeon[][16]) {
     if (GetAsyncKeyState((unsigned short)'S') & 0x8000) {
         float newX = fPlayerX - sinf(fPlayerA) * 4.0f * fElapsedTime;
         float newY = fPlayerY - cosf(fPlayerA) * 4.0f * fElapsedTime;
-        if (dungeon[(int)newY][(int)newX] != '#') {
+        if (dungeon[(int)newY][(int)newX] != '#' && newX >= 0 && newX < nMapWidth && newY >= 0 && newY < nMapHeight) {
             fPlayerX = newX;
             fPlayerY = newY;
         }
@@ -80,7 +82,8 @@ void RenderFrame(wchar_t* screen, const char dungeon[][16], HANDLE hConsole, DWO
                 bHitWall = true;
                 fDistanceToWall = fDepth;
             } else {
-                if (dungeon[nTestY][nTestX] == '#') {
+                char currentCell = dungeon[nTestY][nTestX];
+                if (currentCell == '#' || currentCell == 'B' || currentCell == 'G' || currentCell == 'M' || currentCell == 'E') {
                     bHitWall = true;
                     vector<pair<float, float>> corners;
                     for (int tx = 0; tx < 2; tx++) {
@@ -109,6 +112,7 @@ void RenderFrame(wchar_t* screen, const char dungeon[][16], HANDLE hConsole, DWO
         else if (fDistanceToWall < fDepth)          nShade = 0x2591;
         else                                        nShade = ' ';
         if (bBoundary) nShade = '|';
+
         short mShade;
         for (int y = 0; y < nScreenHeight; y++) {
             if (y < nCeiling)
@@ -126,9 +130,10 @@ void RenderFrame(wchar_t* screen, const char dungeon[][16], HANDLE hConsole, DWO
             }
         }
     }
+
     swprintf_s(screen, 40, L"X=%3.2f, Y=%3.2f, A=%3.2f FPS=%3.2f ", fPlayerX, fPlayerY, fPlayerA, 1.0f / fElapsedTime);
-    for (int nx = 0; nx < nMapWidth; nx++) {
-        for (int ny = 0; ny < nMapHeight; ny++) {
+    for (int ny = 0; ny < nMapHeight; ny++) {
+        for (int nx = 0; nx < nMapWidth; nx++) {
             screen[(ny + 1) * nScreenWidth + nx] = dungeon[ny][nx];
         }
     }

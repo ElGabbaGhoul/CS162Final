@@ -11,8 +11,13 @@ int main() {
     std::string charName;
     int charGold = 0;
 
+
     charName = getCharName();
-    std::cout << "Hello, " << charName << "." << std::endl;
+    std::cout << "Greetings, " << charName << "." << std::endl;
+    system("pause");
+    createDungeon(dungeon, bLoc, gLoc, eLoc, mLoc, BOMBS, GOLD, MONSTERS, itemChar);
+    displayDungeon(dungeon);
+    system("pause");
 
     std::cout << "Program started" << std::endl;
 
@@ -29,7 +34,6 @@ int main() {
     DWORD dwBytesWritten = 0;
 
     std::cout << "Screen buffer created" << std::endl;
-    createDungeon(dungeon, bLoc, gLoc, eLoc, mLoc, BOMBS, GOLD, MONSTERS, itemChar);
     displayDungeon(dungeon);
 
     auto tp1 = std::chrono::system_clock::now();
