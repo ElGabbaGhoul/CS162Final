@@ -5,6 +5,8 @@
 #include "RandomGeneration.hpp"
 #include <random>
 #include <iostream>
+#include <thread>
+#include <chrono>
 
 void createDungeon(char dungeon[][DUNGEON_SIZE], int bLoc[2], int gLoc[2], int eLoc[2], int mLoc[2], int bombs, int gold, int monsters, char itemChar){
     for (int i = 0; i < DUNGEON_SIZE; i++){
@@ -31,7 +33,9 @@ void createDungeon(char dungeon[][DUNGEON_SIZE], int bLoc[2], int gLoc[2], int e
 // Place Exit
     genRandCoords(dungeon, eLoc, 'E');
     std::string dungeonName = generateDungeonName();
+    displayInstructions();
     std::cout << "Dungeon Created! Now prepare yourself to face..." << std::endl;
+    twoSecPause();
     std::cout << dungeonName << std::endl;
 }
 
@@ -42,12 +46,6 @@ void displayDungeon(char dungeon[][DUNGEON_SIZE]){
         }
         printf("\n");
     }
-//    for (int i = DUNGEON_SIZE - 1; i >= 0; i--) {
-//        for (int j = DUNGEON_SIZE - 1; j >= 0; j--) {
-//            printf("%c", dungeon[i][j]);
-//        }
-//        printf("\n");
-//    }
 }
 
 std::string getCharName() {
@@ -68,22 +66,29 @@ std::string getCharName() {
     return player;
 }
 
-//void displayInstructions(const std::string& charName, const std::string& ){
-//    std::cout << ""
-//}
+void displayInstructions(){
+    std::cout << "WASD to walk around the dungeon!\n" << std::endl;
+    oneSecPause();
+    std::cout << "Collect gold! Avoid bombs! Kill monsters!\n" << std::endl;
+    oneSecPause();
+    std::cout << "Navigate to the exit!\n" << std::endl;
+    oneSecPause();
+    std::cout << "Purchase upgrades on sanctuary levels!\n" << std::endl;
+    oneSecPause();
+}
 
 std::string generateDungeonName() {
     std::string dungeonName;
 
     std::string prefixes[] = {"Howling", "Abandoned", "Damned"};
 
-    std::string nouns[] = {"Cavern", "Field", "Swamp"};
+    std::string nouns[] = {"Cavern", "Mine", "Swamp"};
 
-    std::string suffixes[] = {"Crazed", "Undead", "Bloodthirsty"};
+    std::string suffixes[] = {"Crazed", "Vicious", "Bloodthirsty"};
 
-    std::string enemies[] = {"Cadavers", "Spirits", "Penguins"};
+    std::string enemies[] = {"Cadavers", "Spirits", "Slimes"};
 
-    dungeonName = prefixes[randRange(0,2)] + " " + nouns[randRange(0,2)] + " of the " + suffixes[randRange(0,2)] + " " + enemies[randRange(0,2)] + "!" ;
+    dungeonName = prefixes[randRange(0,2)] + " " + nouns[randRange(0,2)] + " of the " + suffixes[randRange(0,2)] + " " + enemies[randRange(0,2)] + "!\n" ;
 
     return dungeonName;
 }
@@ -105,4 +110,12 @@ int randRange(int low, int high){
     static std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(low, high);
     return dis(gen);
+}
+
+void twoSecPause(){
+    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+}
+
+void oneSecPause(){
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 }

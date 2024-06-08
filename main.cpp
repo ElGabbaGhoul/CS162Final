@@ -13,8 +13,9 @@ int main() {
 
 
     charName = getCharName();
-    std::cout << "Greetings, " << charName << "." << std::endl;
-    system("pause");
+    std::cout << "Greetings, " << charName << ".\n" << std::endl;
+    twoSecPause();
+    std::cout << "\n";
     createDungeon(dungeon, bLoc, gLoc, eLoc, mLoc, BOMBS, GOLD, MONSTERS, itemChar);
     displayDungeon(dungeon);
     system("pause");

@@ -17,8 +17,11 @@ void createDungeon(char dungeon[][DUNGEON_SIZE], int bLoc[2], int gLoc[2], int e
 void displayDungeon(char dungeon[][DUNGEON_SIZE]);
 std::string getCharName();
 std::string generateDungeonName();
+void displayInstructions();
 void genRandCoords(char dungeon[][DUNGEON_SIZE], int coords[2], char itemChar);
 int randRange(int low, int high);
+void twoSecPause();
+void oneSecPause();
 
 
 #endif //CSFINAL_RANDOMGENERATION_HPP
