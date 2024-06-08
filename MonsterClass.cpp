@@ -3,3 +3,5 @@
 //
 
 #include "MonsterClass.hpp"
+
+extern Player player;

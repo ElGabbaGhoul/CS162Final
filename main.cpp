@@ -3,20 +3,26 @@
 #include <chrono>
 #include "GraphicsEngine.hpp"
 #include "RandomGeneration.hpp"
+#include "MonsterClass.hpp"
+
+Player* player;
 
 int main() {
     char dungeon[DUNGEON_SIZE][DUNGEON_SIZE];
     int bLoc[2], gLoc[2], eLoc[2], pLoc[2], mLoc[2], pLocNew[2];
     char itemChar = '_';
-    std::string charName;
-    int charGold = 0;
+
+    player = new Player();
+
+    std::string playerName = getCharName();
+
+    player->setName(playerName);
 
 
-    charName = getCharName();
-    std::cout << "Greetings, " << charName << ".\n" << std::endl;
+    std::cout << "Greetings, " << player->getName() << ".\n" << std::endl;
     twoSecPause();
     std::cout << "\n";
-    createDungeon(dungeon, bLoc, gLoc, eLoc, mLoc, BOMBS, GOLD, MONSTERS, itemChar);
+    createDungeon(dungeon, bLoc, gLoc, eLoc, mLoc, pLoc, pLocNew, BOMBS, GOLD, MONSTERS, itemChar);
     displayDungeon(dungeon);
     system("pause");
 
@@ -48,11 +54,14 @@ int main() {
         float fElapsedTime = elapsedTime.count();
 
         UpdatePlayer(fElapsedTime, dungeon);
+        checkTile(dungeon, player);
         RenderFrame(screen, dungeon, hConsole, dwBytesWritten, fElapsedTime);
 
         if (GetAsyncKeyState(VK_ESCAPE) & 0x8000)
             bGameRunning = false;
     }
+
+    delete player;
 
     return 0;
 }

@@ -22,7 +22,7 @@ public:
     ~Monster() {};
 
     std::string getColor() const {
-        return color;
+        return this->color;
     }
     std::string getType() const{
         return type;
@@ -53,6 +53,64 @@ public:
     void setGold(const int& setGold){
         this->gold = setGold;
     }
+
+
+
+};
+class Player{
+private:
+    std::string name;
+    int armor;
+    int damage;
+    int maxHealth;
+    int currentHealth;
+    int playerGold;
+public:
+    Player() : name(""), armor(5), damage(5), maxHealth(3), currentHealth(3), playerGold(0){};
+    Player(const std::string& name, int armor, int damage, int maxHealth, int currentHealth, int playerGold)
+    : name(name), armor(armor), damage(damage), maxHealth(maxHealth), currentHealth(currentHealth), playerGold(playerGold){};
+    ~Player() {};
+    // getters
+    std::string getName() const {
+        return this->name;
+    }
+    int getArmor() const {
+        return this->armor;
+    }
+    int getDamage() const {
+        return this->damage;
+    }
+    int getCurrentHealth() const {
+        return this->currentHealth;
+    }
+    int getMaxHealth() const {
+        return this->maxHealth;
+    }
+    int getGold() const {
+        return this->playerGold;
+    }
+
+    //setters
+    void setName(const std::string& charName){
+        this->name = charName;
+    }
+    void setArmor(int setArmor){
+        this->armor = setArmor;
+    }
+    void setDamage(int setDamage){
+        this->damage = setDamage;
+    }
+    void setMaxHealth(int setMax){
+        this->maxHealth = setMax;
+    }
+    void setCurrentHealth(int setCurrent){
+        this->currentHealth = setCurrent;
+    }
+    void setGold(int setGold){
+        this->playerGold = setGold;
+    }
+
+
 
 
 

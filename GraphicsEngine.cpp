@@ -4,17 +4,19 @@
 
 #include "GraphicsEngine.hpp"
 #include "RandomGeneration.hpp"
+#include "MonsterClass.hpp"
 #include <cmath>
 #include <iostream>
 #include <algorithm>
 
 using namespace std;
 
+
 int nScreenWidth = 120;
 int nScreenHeight = 40;
 
-float fPlayerX = 8.0f;
-float fPlayerY = 8.0f;
+float fPlayerX = 1.0f;
+float fPlayerY = 1.0f;
 float fPlayerA = 0.0f;
 
 int nMapHeight = 16;
@@ -65,6 +67,26 @@ void UpdatePlayer(float fElapsedTime, const char dungeon[][16]) {
         fPlayerA += (1.0f) * fElapsedTime;
     }
 }
+
+void checkTile(char dungeon[][DUNGEON_SIZE], Player* player){
+    int x = (int)fPlayerY;
+    int y = (int)fPlayerX;
+    int currentHealth = player->getCurrentHealth();
+    int playerGold = player->getGold();
+    
+    if (dungeon[x][y] == 'B'){
+        currentHealth -= 1;
+        player->setCurrentHealth(currentHealth);
+        dungeon[x][y] = '_';
+    } else if (dungeon[x][y] == 'G'){
+        playerGold += 5;
+        player->setGold(playerGold);
+        dungeon[x][y] = '_';
+    }
+
+
+}
+
 
 void RenderFrame(wchar_t* screen, const char dungeon[][16], HANDLE hConsole, DWORD& dwBytesWritten, float fElapsedTime) {
     for (int x = 0; x < nScreenWidth; x++) {
@@ -131,7 +153,9 @@ void RenderFrame(wchar_t* screen, const char dungeon[][16], HANDLE hConsole, DWO
         }
     }
 
-    swprintf_s(screen, 40, L"X=%3.2f, Y=%3.2f, A=%3.2f FPS=%3.2f ", fPlayerX, fPlayerY, fPlayerA, 1.0f / fElapsedTime);
+
+// update to display player gold, stats
+    swprintf_s(screen, 65, L"X=%3.2f, Y=%3.2f, Gold=%d, Health=%d/%d", fPlayerX, fPlayerY, player->getGold(), player->getCurrentHealth(), player->getMaxHealth());
     for (int ny = 0; ny < nMapHeight; ny++) {
         for (int nx = 0; nx < nMapWidth; nx++) {
             screen[(ny + 1) * nScreenWidth + nx] = dungeon[ny][nx];

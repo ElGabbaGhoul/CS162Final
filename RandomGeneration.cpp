@@ -7,8 +7,7 @@
 #include <iostream>
 #include <thread>
 #include <chrono>
-
-void createDungeon(char dungeon[][DUNGEON_SIZE], int bLoc[2], int gLoc[2], int eLoc[2], int mLoc[2], int bombs, int gold, int monsters, char itemChar){
+void createDungeon(char dungeon[][DUNGEON_SIZE], int bLoc[2], int gLoc[2], int eLoc[2], int mLoc[2], int pLoc[2], int pLocNew[2], int bombs, int gold, int monsters, char itemChar){
     for (int i = 0; i < DUNGEON_SIZE; i++){
         for ( int j = 0; j < DUNGEON_SIZE; j++){
             if (i == 0 || i == DUNGEON_SIZE - 1 || j == 0 || j == DUNGEON_SIZE - 1) {
@@ -18,6 +17,7 @@ void createDungeon(char dungeon[][DUNGEON_SIZE], int bLoc[2], int gLoc[2], int e
             }
         }
     }
+
 // Place Bombs
     for (int i = 0; i < bombs; i++){
         genRandCoords(dungeon, bLoc, 'B');
@@ -32,6 +32,7 @@ void createDungeon(char dungeon[][DUNGEON_SIZE], int bLoc[2], int gLoc[2], int e
     }
 // Place Exit
     genRandCoords(dungeon, eLoc, 'E');
+
     std::string dungeonName = generateDungeonName();
     displayInstructions();
     std::cout << "Dungeon Created! Now prepare yourself to face..." << std::endl;
@@ -67,7 +68,9 @@ std::string getCharName() {
 }
 
 void displayInstructions(){
-    std::cout << "WASD to walk around the dungeon!\n" << std::endl;
+    std::cout << "Press ESC at any time to close the game!\n" << std::endl;
+    oneSecPause();
+    std::cout << "Use WASD to walk around the dungeon!\n" << std::endl;
     oneSecPause();
     std::cout << "Collect gold! Avoid bombs! Kill monsters!\n" << std::endl;
     oneSecPause();

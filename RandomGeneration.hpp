@@ -13,7 +13,8 @@ const int BOMBS = 4;
 const int MONSTERS = 4;
 const int GOLD = 4;
 
-void createDungeon(char dungeon[][DUNGEON_SIZE], int bLoc[2], int gLoc[2], int eLoc[2], int mLoc[2], int bombs, int gold, int monsters, char itemChar);
+
+void createDungeon(char dungeon[][DUNGEON_SIZE], int bLoc[2], int gLoc[2], int eLoc[2], int mLoc[2], int pLoc[2], int pLocNew[2], int bombs, int gold, int monsters, char itemChar);
 void displayDungeon(char dungeon[][DUNGEON_SIZE]);
 std::string getCharName();
 std::string generateDungeonName();
