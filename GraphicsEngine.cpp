@@ -11,7 +11,6 @@
 
 using namespace std;
 
-
 int nScreenWidth = 120;
 int nScreenHeight = 40;
 
@@ -83,8 +82,11 @@ void checkTile(char dungeon[][DUNGEON_SIZE], Player* player){
         player->setGold(playerGold);
         dungeon[x][y] = '_';
     }
-
-
+    // implement this part next
+//    else if (dungeon[x][y] = 'M'){
+//
+//
+//    }
 }
 
 

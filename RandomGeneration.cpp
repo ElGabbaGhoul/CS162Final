@@ -3,11 +3,17 @@
 //
 
 #include "RandomGeneration.hpp"
+#include "MonsterClass.hpp"
 #include <random>
 #include <iostream>
 #include <thread>
 #include <chrono>
-void createDungeon(char dungeon[][DUNGEON_SIZE], int bLoc[2], int gLoc[2], int eLoc[2], int mLoc[2], int pLoc[2], int pLocNew[2], int bombs, int gold, int monsters, char itemChar){
+
+
+Monster* monsters[MONSTER_COUNT];
+
+
+void createDungeon(char dungeon[][DUNGEON_SIZE], int bLoc[2], int gLoc[2], int eLoc[2], int mLoc[2], int pLoc[2], int pLocNew[2], int bombs, int gold, int monstersCount, char itemChar){
     for (int i = 0; i < DUNGEON_SIZE; i++){
         for ( int j = 0; j < DUNGEON_SIZE; j++){
             if (i == 0 || i == DUNGEON_SIZE - 1 || j == 0 || j == DUNGEON_SIZE - 1) {
@@ -23,8 +29,17 @@ void createDungeon(char dungeon[][DUNGEON_SIZE], int bLoc[2], int gLoc[2], int e
         genRandCoords(dungeon, bLoc, 'B');
     }
 // Place Monsters
-    for (int i = 0; i < monsters; i++){
+    for (int i = 0; i < MONSTER_COUNT; i++){
         genRandCoords(dungeon, mLoc, 'M');
+
+//        int monsterType = randRange(0,2);
+//        if (monsterType == 0){
+//            monsters[i] = new Skelly();
+//        } else if (monsterType == 1){
+//            monsters[i] = new Slime();
+//        } else {
+//            monsters[i] = new Ghost();
+//        }
     }
 // Place Gold
     for (int i = 0; i < gold; i++){
@@ -38,6 +53,10 @@ void createDungeon(char dungeon[][DUNGEON_SIZE], int bLoc[2], int gLoc[2], int e
     std::cout << "Dungeon Created! Now prepare yourself to face..." << std::endl;
     twoSecPause();
     std::cout << dungeonName << std::endl;
+}
+
+void resolveCombat(){
+
 }
 
 void displayDungeon(char dungeon[][DUNGEON_SIZE]){
@@ -98,14 +117,15 @@ std::string generateDungeonName() {
 
 void genRandCoords(char dungeon[][DUNGEON_SIZE], int coords[2], char itemChar) {
     int x, y;
+
     do {
-        x = randRange(0, DUNGEON_SIZE - 1);
-        y = randRange(0, DUNGEON_SIZE - 1);
+        x = randRange(1, DUNGEON_SIZE - 1);
+        y = randRange(1, DUNGEON_SIZE - 1);
     } while (dungeon[x][y] != '_');
 
-    dungeon[x][y] = itemChar;
-    coords[0] = x;
-    coords[1] = y;
+        dungeon[x][y] = itemChar;
+        coords[0] = x;
+        coords[1] = y;
 }
 
 int randRange(int low, int high){

@@ -6,11 +6,11 @@
 #define CSFINAL_RANDOMGENERATION_HPP
 
 #include <iostream>
-
+#include "MonsterClass.hpp"
 
 const int DUNGEON_SIZE = 16;
 const int BOMBS = 4;
-const int MONSTERS = 4;
+extern const int MONSTER_COUNT;
 const int GOLD = 4;
 
 

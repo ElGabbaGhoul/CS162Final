@@ -6,36 +6,72 @@
 #define CSFINAL_MONSTERCLASS_HPP
 
 #include <iostream>
+#include "RandomGeneration.hpp"
+
+
+// ANSI colors
+
+extern const char* RESET;
+extern const char* BLACK;
+extern const char* RED;
+extern const char* GREEN;
+extern const char* YELLOW;
+extern const char* BLUE;
+extern const char* MAGENTA;
+extern const char* CYAN;
+extern const char* WHITE;
+
+extern const char* BRIGHT_BLACK;
+extern const char* BRIGHT_GREEN;
+extern const char* BRIGHT_WHITE;
+extern const char* BRIGHT_YELLOW;
+extern const char* BRIGHT_BLUE;
+extern const char* BRIGHT_MAGENTA;
+extern const char* BRIGHT_CYAN;
+extern const char* BRIGHT_RED;
+
+class Monster;
+
+const int MONSTER_COUNT = 4;
+
+extern Monster* monsters[MONSTER_COUNT];
 
 class Monster {
 private:
+    // color = visual tell of type
     std::string color;
+    // type = slime/skelly/ghost
     std::string type;
+    std::string action;
     int armor;
     int health;
-    int gold;
+    int damage;
 public:
-    Monster() : color(""), type(""), armor(0), health(0), gold(0){};
-    Monster(const std::string& color, const std::string& type, int armor, int health, int gold)
-    : color(color), type(type), armor(armor), health(health), gold(gold) {};
+    Monster() : color(""), type(""), action(""), armor(0), health(0), damage(0){};
+    Monster(const std::string& color, const std::string& type, const std::string& action, int armor, int health, int damage)
+    : color(color), type(type), action(action), armor(armor), health(health), damage(damage) {};
 
-    ~Monster() {};
+    virtual ~Monster() {};
 
     std::string getColor() const {
         return this->color;
     }
     std::string getType() const{
-        return type;
+        return this->type;
+    }
+    std::string getAction() const {
+        return this->action;
     }
     int getArmor() const {
-        return armor;
+        return this->armor;
     }
     int getHealth() const {
-        return health;
+        return this->health;
     }
-    int getGold() const {
-        return gold;
+    int getDamage() const {
+        return this->damage;
     }
+
 
     void setColor(const std::string& setColor){
         this->color = setColor;
@@ -43,20 +79,73 @@ public:
     void setType(const std::string& setType){
         this->type = setType;
     }
+    void setAction(const std::string& setAction){
+        this->action = setAction;
+    }
     void setArmor(const int& setArmor){
         this->armor = setArmor;
     }
-
     void setHealth(const int& setHealth){
         this->health = setHealth;
     }
-    void setGold(const int& setGold){
-        this->gold = setGold;
+    void setDamage(const int& setDamage){
+        this->damage = setDamage;
     }
 
-
-
 };
+
+class Enemy : public Monster{
+public:
+    Enemy(const std::string& color, const std::string type, const std::string action, int armor, int health, int damage)
+    : Monster(color, type, action, armor, health, damage){}
+
+    virtual ~Enemy() = default;
+
+    virtual std::string getEnemyColor() const = 0;
+    virtual std::string getEnemyType() const = 0;
+    virtual std::string getEnemyAction() const = 0;
+    virtual int getEnemyArmor() const = 0;
+    virtual int getEnemyHealth() const = 0;
+    virtual int getEnemyDamage() const = 0;
+};
+
+class Skelly : public Enemy {
+public:
+    Skelly() : Enemy(BRIGHT_BLACK, "Skeleton", "You receive Amulet of Undeath!", 10, 3, 1) {}
+
+    std::string getEnemyColor() const override {return this->getColor();}
+    std::string getEnemyType() const override {return this->getType();}
+    std::string getEnemyAction() const override {return this->getAction();}
+    int getEnemyArmor() const override {return this->getArmor();}
+    int getEnemyHealth() const override {return this->getHealth();}
+    int getEnemyDamage() const override {return this->getDamage();}
+};
+
+class Slime : public Enemy {
+public:
+    Slime() : Enemy(BRIGHT_GREEN, "Slime", "The slain Slime is beginning to explode!", 5, 2, 0){}
+
+    std::string getEnemyColor() const override {return this->getColor();}
+    std::string getEnemyType() const override {return this->getType();}
+    std::string getEnemyAction() const override {return this->getAction();}
+    int getEnemyArmor() const override {return this->getArmor();}
+    int getEnemyHealth() const override {return this->getHealth();}
+    int getEnemyDamage() const override {return this->getDamage();}
+};
+
+class Ghost : public Enemy {
+public:
+    Ghost() : Enemy(BRIGHT_WHITE, "Ghost", "The slain ghost is attempting to rob you!", 1, 1, 1) {}
+
+
+    std::string getEnemyColor() const override {return this->getColor();}
+    std::string getEnemyType() const override {return this->getType();}
+    std::string getEnemyAction() const override {return this->getAction();}
+    int getEnemyArmor() const override {return this->getArmor();}
+    int getEnemyHealth() const override {return this->getHealth();}
+    int getEnemyDamage() const override {return this->getDamage();}
+};
+
 class Player{
 private:
     std::string name;
@@ -109,11 +198,6 @@ public:
     void setGold(int setGold){
         this->playerGold = setGold;
     }
-
-
-
-
-
 };
 
 #endif //CSFINAL_MONSTERCLASS_HPP
