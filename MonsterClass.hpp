@@ -43,13 +43,14 @@ private:
     // type = slime/skelly/ghost
     std::string type;
     std::string action;
+    char letter;
     int armor;
     int health;
     int damage;
 public:
-    Monster() : color(""), type(""), action(""), armor(0), health(0), damage(0){};
-    Monster(const std::string& color, const std::string& type, const std::string& action, int armor, int health, int damage)
-    : color(color), type(type), action(action), armor(armor), health(health), damage(damage) {};
+    Monster() : color(""), type(""), action(""), letter('M'), armor(0), health(0), damage(0){};
+    Monster(const std::string& color, const std::string& type, const std::string& action, const char& letter, int armor, int health, int damage)
+    : color(color), type(type), action(action), letter(letter), armor(armor), health(health), damage(damage) {};
 
     virtual ~Monster() {};
 
@@ -61,6 +62,9 @@ public:
     }
     std::string getAction() const {
         return this->action;
+    }
+    char getLetter() const{
+        return this->letter;
     }
     int getArmor() const {
         return this->armor;
@@ -82,6 +86,9 @@ public:
     void setAction(const std::string& setAction){
         this->action = setAction;
     }
+    void setLetter(const char& setLetter){
+        this->letter = setLetter;
+    }
     void setArmor(const int& setArmor){
         this->armor = setArmor;
     }
@@ -96,14 +103,15 @@ public:
 
 class Enemy : public Monster{
 public:
-    Enemy(const std::string& color, const std::string type, const std::string action, int armor, int health, int damage)
-    : Monster(color, type, action, armor, health, damage){}
+    Enemy(const std::string& color, const std::string type, const std::string action, char letter, int armor, int health, int damage)
+    : Monster(color, type, action, letter, armor, health, damage){}
 
     virtual ~Enemy() = default;
 
     virtual std::string getEnemyColor() const = 0;
     virtual std::string getEnemyType() const = 0;
     virtual std::string getEnemyAction() const = 0;
+    virtual char getEnemyLetter() const = 0;
     virtual int getEnemyArmor() const = 0;
     virtual int getEnemyHealth() const = 0;
     virtual int getEnemyDamage() const = 0;
@@ -111,11 +119,12 @@ public:
 
 class Skelly : public Enemy {
 public:
-    Skelly() : Enemy(BRIGHT_BLACK, "Skeleton", "You receive Amulet of Undeath!", 10, 3, 1) {}
+    Skelly() : Enemy(BRIGHT_BLACK, "Skeleton", "You receive Amulet of Undeath!", 'S', 10, 3, 1) {}
 
     std::string getEnemyColor() const override {return this->getColor();}
     std::string getEnemyType() const override {return this->getType();}
     std::string getEnemyAction() const override {return this->getAction();}
+    char getEnemyLetter() const override {return this->getLetter();}
     int getEnemyArmor() const override {return this->getArmor();}
     int getEnemyHealth() const override {return this->getHealth();}
     int getEnemyDamage() const override {return this->getDamage();}
@@ -123,11 +132,12 @@ public:
 
 class Slime : public Enemy {
 public:
-    Slime() : Enemy(BRIGHT_GREEN, "Slime", "The slain Slime is beginning to explode!", 5, 2, 0){}
+    Slime() : Enemy(BRIGHT_GREEN, "Slime", "The slain Slime is beginning to explode!", 'L', 5, 2, 0){}
 
     std::string getEnemyColor() const override {return this->getColor();}
     std::string getEnemyType() const override {return this->getType();}
     std::string getEnemyAction() const override {return this->getAction();}
+    char getEnemyLetter() const override {return this->getLetter();}
     int getEnemyArmor() const override {return this->getArmor();}
     int getEnemyHealth() const override {return this->getHealth();}
     int getEnemyDamage() const override {return this->getDamage();}
@@ -135,12 +145,13 @@ public:
 
 class Ghost : public Enemy {
 public:
-    Ghost() : Enemy(BRIGHT_WHITE, "Ghost", "The slain ghost is attempting to rob you!", 1, 1, 1) {}
+    Ghost() : Enemy(BRIGHT_WHITE, "Ghost", "The slain ghost is attempting to rob you!", 'O', 1, 1, 1) {}
 
 
     std::string getEnemyColor() const override {return this->getColor();}
     std::string getEnemyType() const override {return this->getType();}
     std::string getEnemyAction() const override {return this->getAction();}
+    char getEnemyLetter() const override {return this->getLetter();}
     int getEnemyArmor() const override {return this->getArmor();}
     int getEnemyHealth() const override {return this->getHealth();}
     int getEnemyDamage() const override {return this->getDamage();}

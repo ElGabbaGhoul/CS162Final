@@ -44,9 +44,6 @@ int main() {
     ShowWindow(GetConsoleWindow(), SW_SHOW);
     DWORD dwBytesWritten = 0;
 
-    // don't think this is necessary
-    //displayDungeon(dungeon);
-
     auto tp1 = std::chrono::system_clock::now();
     auto tp2 = std::chrono::system_clock::now();
 
@@ -62,10 +59,14 @@ int main() {
         checkTile(dungeon, player);
         RenderFrame(screen, dungeon, hConsole, dwBytesWritten, fElapsedTime);
 
-        // checks if escape key is pressed
+        // gameOver cases
         if (GetAsyncKeyState(VK_ESCAPE) & 0x8000)
             bGameRunning = false;
+        if (player->getCurrentHealth() == 0)
+            bGameRunning = false;
+
     }
+
 
     // clean up allocated monsters
     for (int i = 0; i < MONSTER_COUNT; ++i){

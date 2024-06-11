@@ -30,16 +30,21 @@ void createDungeon(char dungeon[][DUNGEON_SIZE], int bLoc[2], int gLoc[2], int e
     }
 // Place Monsters
     for (int i = 0; i < MONSTER_COUNT; i++){
-        genRandCoords(dungeon, mLoc, 'M');
 
-//        int monsterType = randRange(0,2);
-//        if (monsterType == 0){
-//            monsters[i] = new Skelly();
-//        } else if (monsterType == 1){
-//            monsters[i] = new Slime();
-//        } else {
-//            monsters[i] = new Ghost();
-//        }
+        int monsterType = randRange(0,2);
+        if (monsterType == 0){
+            monsters[i] = new Skelly();
+        } else if (monsterType == 1){
+            monsters[i] = new Slime();
+        } else {
+            monsters[i] = new Ghost();
+        }
+
+        genRandCoords(dungeon, mLoc, monsters[i]->getLetter());
+
+
+        std::cout << monsters[i]->getType() << std::endl;
+
     }
 // Place Gold
     for (int i = 0; i < gold; i++){
@@ -55,7 +60,12 @@ void createDungeon(char dungeon[][DUNGEON_SIZE], int bLoc[2], int gLoc[2], int e
     std::cout << dungeonName << std::endl;
 }
 
-void resolveCombat(){
+void resolveCombat(char dungeon[][DUNGEON_SIZE]){
+    // get dungeon tile
+    // get monster from dungeon tile
+    // playercurrent = current - monster attack / player armor
+    // monstercurrent = current - player attack / player armor
+    // update accordingly
 
 }
 
@@ -126,6 +136,7 @@ void genRandCoords(char dungeon[][DUNGEON_SIZE], int coords[2], char itemChar) {
         dungeon[x][y] = itemChar;
         coords[0] = x;
         coords[1] = y;
+        std::cout << itemChar << " tiles: " << coords[1] << ", " << coords[0] << std::endl;
 }
 
 int randRange(int low, int high){

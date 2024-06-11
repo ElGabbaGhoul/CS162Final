@@ -82,8 +82,8 @@ void checkTile(char dungeon[][DUNGEON_SIZE], Player* player){
         player->setGold(playerGold);
         dungeon[x][y] = '_';
     }
-    // implement this part next
 //    else if (dungeon[x][y] = 'M'){
+//
 //
 //
 //    }
@@ -107,7 +107,7 @@ void RenderFrame(wchar_t* screen, const char dungeon[][16], HANDLE hConsole, DWO
                 fDistanceToWall = fDepth;
             } else {
                 char currentCell = dungeon[nTestY][nTestX];
-                if (currentCell == '#' || currentCell == 'B' || currentCell == 'G' || currentCell == 'M' || currentCell == 'E') {
+                if (currentCell == '#' || currentCell == 'B' || currentCell == 'G' || currentCell == 'E' || currentCell == 'O' || currentCell == 'L'|| currentCell == 'S') {
                     bHitWall = true;
                     vector<pair<float, float>> corners;
                     for (int tx = 0; tx < 2; tx++) {
@@ -158,8 +158,8 @@ void RenderFrame(wchar_t* screen, const char dungeon[][16], HANDLE hConsole, DWO
 
 // update to display player gold, stats
     swprintf_s(screen, 65, L"X=%3.2f, Y=%3.2f, Gold=%d, Health=%d/%d", fPlayerX, fPlayerY, player->getGold(), player->getCurrentHealth(), player->getMaxHealth());
-    for (int ny = 0; ny < nMapHeight; ny++) {
-        for (int nx = 0; nx < nMapWidth; nx++) {
+    for (int nx = 0; nx < nMapHeight; nx++) {
+        for (int ny = 0; ny < nMapWidth; ny++) {
             screen[(ny + 1) * nScreenWidth + nx] = dungeon[ny][nx];
         }
     }
