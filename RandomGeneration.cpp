@@ -2,18 +2,18 @@
 // Created by Scooter on 5/31/2024.
 //
 
-#include "RandomGeneration.hpp"
+
 #include "MonsterClass.hpp"
+#include "RandomGeneration.hpp"
 #include <random>
 #include <iostream>
 #include <thread>
 #include <chrono>
 
 
-Monster* monsters[MONSTER_COUNT];
 
 
-void createDungeon(char dungeon[][DUNGEON_SIZE], int bLoc[2], int gLoc[2], int eLoc[2], int mLoc[2], int pLoc[2], int pLocNew[2], int bombs, int gold, int monstersCount, char itemChar){
+void createDungeon(char dungeon[][DUNGEON_SIZE], int bLoc[2], int gLoc[2], int eLoc[2], int mLoc[2], int bombs, int gold, char itemChar, Monster* monsters[MONSTER_COUNT]){
     for (int i = 0; i < DUNGEON_SIZE; i++){
         for ( int j = 0; j < DUNGEON_SIZE; j++){
             if (i == 0 || i == DUNGEON_SIZE - 1 || j == 0 || j == DUNGEON_SIZE - 1) {
@@ -58,15 +58,6 @@ void createDungeon(char dungeon[][DUNGEON_SIZE], int bLoc[2], int gLoc[2], int e
     std::cout << "Dungeon Created! Now prepare yourself to face..." << std::endl;
     twoSecPause();
     std::cout << dungeonName << std::endl;
-}
-
-void resolveCombat(char dungeon[][DUNGEON_SIZE]){
-    // get dungeon tile
-    // get monster from dungeon tile
-    // playercurrent = current - monster attack / player armor
-    // monstercurrent = current - player attack / player armor
-    // update accordingly
-
 }
 
 void displayDungeon(char dungeon[][DUNGEON_SIZE]){

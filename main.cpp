@@ -24,11 +24,13 @@ int main() {
 
     player->setName(playerName);
 
+    Monster* monsters[MONSTER_COUNT];
+
 
     std::cout << "Greetings, " << player->getName() << ".\n" << std::endl;
     twoSecPause();
     std::cout << "\n";
-    createDungeon(dungeon, bLoc, gLoc, eLoc, mLoc, pLoc, pLocNew, BOMBS, GOLD, MONSTER_COUNT, itemChar);
+    createDungeon(dungeon, bLoc, gLoc, eLoc, mLoc, BOMBS, GOLD, itemChar, monsters);
     displayDungeon(dungeon);
     system("pause");
 
@@ -56,7 +58,7 @@ int main() {
         float fElapsedTime = elapsedTime.count();
 
         UpdatePlayer(fElapsedTime, dungeon);
-        checkTile(dungeon, player);
+        checkTile(dungeon, player, monsters);
         RenderFrame(screen, dungeon, hConsole, dwBytesWritten, fElapsedTime);
 
         // gameOver cases

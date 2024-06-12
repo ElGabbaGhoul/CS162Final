@@ -3,8 +3,8 @@
 //
 
 #include "GraphicsEngine.hpp"
-#include "RandomGeneration.hpp"
 #include "MonsterClass.hpp"
+#include "RandomGeneration.hpp"
 #include <cmath>
 #include <iostream>
 #include <algorithm>
@@ -67,7 +67,7 @@ void UpdatePlayer(float fElapsedTime, const char dungeon[][16]) {
     }
 }
 
-void checkTile(char dungeon[][DUNGEON_SIZE], Player* player){
+void checkTile(char dungeon[][DUNGEON_SIZE], Player* player, Monster* monsters[MONSTER_COUNT]){
     int x = (int)fPlayerY;
     int y = (int)fPlayerX;
     int currentHealth = player->getCurrentHealth();
@@ -81,12 +81,37 @@ void checkTile(char dungeon[][DUNGEON_SIZE], Player* player){
         playerGold += 5;
         player->setGold(playerGold);
         dungeon[x][y] = '_';
+    } else if (dungeon[x][y] == 'O' || dungeon[x][y] == 'S' || dungeon[x][y] == 'L'){
+        bool monsterEncounter = false;
+        for (int i = 0; i < MONSTER_COUNT; ++i){
+            if (monsters[i] != nullptr && !monsterEncounter){
+                int enemyChanceToHit = randRange(0,10);
+                if (enemyChanceToHit > 7 && !monsterEncounter){
+                    int damageToPlayer = monsters[i]->getDamage();
+                    if (player->getArmor() > 0){
+                        player->setArmor(player->getArmor() - damageToPlayer);
+                    } else {
+                        player->setCurrentHealth(player->getCurrentHealth() - damageToPlayer);
+                    }
+                    monsterEncounter = true;
+                }
+            }
+        }
+        // if monster misses, (likely!)
+        // player hits monster
+        if (monsterEncounter){
+            for (int i = 0; i < MONSTER_COUNT; i++){
+                if (monsters[i] != nullptr){
+                    monsters[i]->setHealth(monsters[i]->getHealth() - player->getDamage());
+                    if (monsters[i]->getHealth() <= 0){
+                        dungeon[x][y] = '_';
+                        delete monsters[i];
+                        monsters[i] = nullptr;
+                    }
+                }
+            }
+        }
     }
-//    else if (dungeon[x][y] = 'M'){
-//
-//
-//
-//    }
 }
 
 
@@ -157,7 +182,7 @@ void RenderFrame(wchar_t* screen, const char dungeon[][16], HANDLE hConsole, DWO
 
 
 // update to display player gold, stats
-    swprintf_s(screen, 65, L"X=%3.2f, Y=%3.2f, Gold=%d, Health=%d/%d", fPlayerX, fPlayerY, player->getGold(), player->getCurrentHealth(), player->getMaxHealth());
+    swprintf_s(screen, 65, L"X=%3.2f, Y=%3.2f, Armor=%d, Health=%d/%d, Gold=%d", fPlayerX, fPlayerY, player->getArmor(), player->getCurrentHealth(), player->getMaxHealth(), player->getGold());
     for (int nx = 0; nx < nMapHeight; nx++) {
         for (int ny = 0; ny < nMapWidth; ny++) {
             screen[(ny + 1) * nScreenWidth + nx] = dungeon[ny][nx];
