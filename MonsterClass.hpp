@@ -72,12 +72,12 @@ public:
 
 class Skelly : public Enemy {
 public:
-    Skelly() : Enemy(BRIGHT_BLACK, "Skeleton", "You receive Amulet of Undeath!", 'S', 3, 1) {}
+    Skelly() : Enemy(BRIGHT_BLACK, "Skeleton", "You receive Amulet of Undeath!", 'S', 3, 2) {}
 };
 
 class Slime : public Enemy {
 public:
-    Slime() : Enemy(BRIGHT_GREEN, "Slime", "The slain Slime is beginning to explode!", 'L', 2, 0){}
+    Slime() : Enemy(BRIGHT_GREEN, "Slime", "The slain Slime is beginning to explode!", 'L', 2, 1){}
 };
 
 class Ghost : public Enemy {
@@ -94,7 +94,7 @@ private:
     int currentHealth;
     int playerGold;
 public:
-    Player() : name(""), armor(5), damage(5), maxHealth(3), currentHealth(3), playerGold(0){};
+    Player() : name(""), armor(5), damage(2), maxHealth(3), currentHealth(3), playerGold(0){};
     Player(const std::string& name, int armor, int damage, int maxHealth, int currentHealth, int playerGold)
     : name(name), armor(armor), damage(damage), maxHealth(maxHealth), currentHealth(currentHealth), playerGold(playerGold){};
     ~Player() {};

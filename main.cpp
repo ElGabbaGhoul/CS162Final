@@ -15,10 +15,10 @@ Player* player;
 
 int main() {
     char dungeon[DUNGEON_SIZE][DUNGEON_SIZE];
-    int bLoc[2], gLoc[2], eLoc[2], pLoc[2], mLoc[2], pLocNew[2];
+    int bLoc[2], gLoc[2], eLoc[2], mLoc[2];
     char itemChar = '_';
 
-    player = new Player("Player1", 5, 5, 3, 3, 0);
+    player = new Player("Player1", 5, 2, 3, 3, 0);
 
     std::string playerName = getCharName();
 
@@ -28,13 +28,16 @@ int main() {
 
 
     std::cout << "Greetings, " << player->getName() << ".\n" << std::endl;
-    twoSecPause();
+    //twoSecPause();
     std::cout << "\n";
     createDungeon(dungeon, bLoc, gLoc, eLoc, mLoc, BOMBS, GOLD, itemChar, monsters);
     displayDungeon(dungeon);
     system("pause");
 
     InitializeFPS();
+
+    float prevX = fPlayerX;
+    float prevY = fPlayerY;
 
     wchar_t* screen = new wchar_t[nScreenWidth * nScreenHeight];
     HANDLE hConsole = CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE, 0, nullptr, CONSOLE_TEXTMODE_BUFFER, nullptr);
@@ -57,8 +60,8 @@ int main() {
         tp1 = tp2;
         float fElapsedTime = elapsedTime.count();
 
-        UpdatePlayer(fElapsedTime, dungeon);
-        checkTile(dungeon, player, monsters);
+        UpdatePlayer(fElapsedTime, dungeon, prevX, prevY);
+        checkTile(dungeon, player, monsters, prevX, prevY);
         RenderFrame(screen, dungeon, hConsole, dwBytesWritten, fElapsedTime);
 
         // gameOver cases

@@ -56,7 +56,7 @@ void createDungeon(char dungeon[][DUNGEON_SIZE], int bLoc[2], int gLoc[2], int e
     std::string dungeonName = generateDungeonName();
     displayInstructions();
     std::cout << "Dungeon Created! Now prepare yourself to face..." << std::endl;
-    twoSecPause();
+    //twoSecPause();
     std::cout << dungeonName << std::endl;
 }
 
@@ -142,5 +142,5 @@ void twoSecPause(){
 }
 
 void oneSecPause(){
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
 }

@@ -39,7 +39,10 @@ void InitializeFPS() {
 }
 
 // Controls
-void UpdatePlayer(float fElapsedTime, const char dungeon[][16]) {
+void UpdatePlayer(float fElapsedTime, const char dungeon[][16], float& prevX, float& prevY) {
+    float prevPosX = fPlayerX;
+    float prevPosY = fPlayerY;
+
     if (GetAsyncKeyState((unsigned short)'W') & 0x8000) {
         float newX = fPlayerX + sinf(fPlayerA) * 2.5f * fElapsedTime;
         float newY = fPlayerY + cosf(fPlayerA) * 2.5f * fElapsedTime;
@@ -65,48 +68,56 @@ void UpdatePlayer(float fElapsedTime, const char dungeon[][16]) {
     if (GetAsyncKeyState((unsigned short)'D') & 0x8000) {
         fPlayerA += (1.0f) * fElapsedTime;
     }
+
+    prevX = prevPosX;
+    prevY = prevPosY;
 }
 
-void checkTile(char dungeon[][DUNGEON_SIZE], Player* player, Monster* monsters[MONSTER_COUNT]){
+void checkTile(char dungeon[][DUNGEON_SIZE], Player* player, Monster* monsters[MONSTER_COUNT], float prevX, float prevY) {
     int x = (int)fPlayerY;
     int y = (int)fPlayerX;
     int currentHealth = player->getCurrentHealth();
     int playerGold = player->getGold();
-    
-    if (dungeon[x][y] == 'B'){
-        currentHealth -= 1;
-        player->setCurrentHealth(currentHealth);
-        dungeon[x][y] = '_';
-    } else if (dungeon[x][y] == 'G'){
-        playerGold += 5;
-        player->setGold(playerGold);
-        dungeon[x][y] = '_';
-    } else if (dungeon[x][y] == 'O' || dungeon[x][y] == 'S' || dungeon[x][y] == 'L'){
-        bool monsterEncounter = false;
-        for (int i = 0; i < MONSTER_COUNT; ++i){
-            if (monsters[i] != nullptr && !monsterEncounter){
-                int enemyChanceToHit = randRange(0,10);
-                if (enemyChanceToHit > 7 && !monsterEncounter){
-                    int damageToPlayer = monsters[i]->getDamage();
-                    if (player->getArmor() > 0){
-                        player->setArmor(player->getArmor() - damageToPlayer);
-                    } else {
-                        player->setCurrentHealth(player->getCurrentHealth() - damageToPlayer);
+
+    int prevPosX = (int)prevX;
+    int prevPosY = (int)prevY;
+
+    if (x != prevPosX || y != prevPosY) {
+        if (dungeon[x][y] == 'B') {
+            currentHealth -= 1;
+            player->setCurrentHealth(currentHealth);
+            dungeon[x][y] = '_';
+        } else if (dungeon[x][y] == 'G') {
+            playerGold += 5;
+            player->setGold(playerGold);
+            dungeon[x][y] = '_';
+        } else if (dungeon[x][y] == 'O' || dungeon[x][y] == 'S' || dungeon[x][y] == 'L') {
+            bool playerHitMonster = false;
+            for (int i = 0; i < MONSTER_COUNT; i++) {
+                if (monsters[i] != nullptr && dungeon[x][y] == monsters[i]->getLetter()) {
+                    // Monster hits the player
+                    int enemyChanceToHit = randRange(0, 10);
+                    if (enemyChanceToHit > 6) {
+                        int damageToPlayer = monsters[i]->getDamage();
+                        if (player->getArmor() > 0) {
+                            player->setArmor(player->getArmor() - damageToPlayer);
+                        } else {
+                            player->setCurrentHealth(player->getCurrentHealth() - damageToPlayer);
+                        }
                     }
-                    monsterEncounter = true;
+                    playerHitMonster = true; // Set flag to true
                 }
             }
-        }
-        // if monster misses, (likely!)
-        // player hits monster
-        if (monsterEncounter){
-            for (int i = 0; i < MONSTER_COUNT; i++){
-                if (monsters[i] != nullptr){
-                    monsters[i]->setHealth(monsters[i]->getHealth() - player->getDamage());
-                    if (monsters[i]->getHealth() <= 0){
-                        dungeon[x][y] = '_';
-                        delete monsters[i];
-                        monsters[i] = nullptr;
+            if (playerHitMonster) {
+                for (int i = 0; i < MONSTER_COUNT; i++) {
+                    if (monsters[i] != nullptr && dungeon[x][y] == monsters[i]->getLetter()) {
+                        // Player hits the monster
+                        monsters[i]->setHealth(monsters[i]->getHealth() - player->getDamage());
+                        if (monsters[i]->getHealth() <= 0) {
+                            dungeon[x][y] = '_';
+                            delete monsters[i];
+                            monsters[i] = nullptr;
+                        }
                     }
                 }
             }
