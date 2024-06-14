@@ -24,6 +24,9 @@ int nMapWidth = 16;
 float fFOV = 3.14159f / 4.0f;
 float fDepth = 16.0f;
 
+int bLoc2[2], gLoc2[2], eLoc2[2], mLoc2[2];
+char itemChar2 = '_';
+
 void InitializeFPS() {
     if (!GetConsoleWindow()) {
         AllocConsole();
@@ -67,7 +70,7 @@ void UpdatePlayer(float fElapsedTime, const char dungeon[][16], Player* player) 
     }
 }
 
-void checkTile(char dungeon[][DUNGEON_SIZE], Player* player, Monster* monsters[MONSTER_COUNT], bool combatHappened) {
+void checkTile(char dungeon[][DUNGEON_SIZE], Player* player, Monster* monsters[MONSTER_COUNT]) {
     int x = (int)fPlayerY;
     int y = (int)fPlayerX;
     int armor = player->getArmor();
@@ -118,6 +121,7 @@ void checkTile(char dungeon[][DUNGEON_SIZE], Player* player, Monster* monsters[M
             //combatHappened = true;
 //     }
 
+// AAAAAAAAAA I FIGURED IT OUT KINDA
     for (int i = 0; i < MONSTER_COUNT; ++i) {
         int monsterX = monsters[i]->getDungeonX();
         int monsterY = monsters[i]->getDungeonY();
@@ -141,7 +145,11 @@ void checkTile(char dungeon[][DUNGEON_SIZE], Player* player, Monster* monsters[M
             }
             dungeon[x][y] = '_';
         }
+    } else if (dungeon[x][y] == 'E'){
+        createNextDungeon(dungeon, bLoc2, gLoc2, eLoc2, mLoc2, BOMBS, GOLD, itemChar2, monsters);
+
     }
+
     }
 }
 

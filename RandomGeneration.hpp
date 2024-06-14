@@ -18,6 +18,7 @@ class Monster;
 
 
 void createDungeon(char dungeon[][DUNGEON_SIZE], int bLoc[2], int gLoc[2], int eLoc[2], int mLoc[2], int bombs, int gold, char itemChar, Monster* monsArr[]);
+void createNextDungeon(char dungeon[][DUNGEON_SIZE], int bLoc[2], int gLoc[2], int eLoc[2], int mLoc[2], int bombs, int gold, char itemChar, Monster* monsters[MONSTER_COUNT]);
 void displayDungeon(char dungeon[][DUNGEON_SIZE]);
 std::string getCharName();
 std::string generateDungeonName();

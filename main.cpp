@@ -59,11 +59,8 @@ int main() {
         float fElapsedTime = elapsedTime.count();
 
         UpdatePlayer(fElapsedTime, dungeon, player);
-        // add combathappened bool
-        checkTile(dungeon, player, monsters, combatHappened);
-        if (combatHappened){
-            combatHappened = false;
-        }
+        checkTile(dungeon, player, monsters);
+
         RenderFrame(screen, dungeon, hConsole, dwBytesWritten, fElapsedTime, player);
 
         // gameOver cases
