@@ -14,6 +14,7 @@ Player* player;
 // Elyra
 
 int main() {
+    bool combatHappened = false;
     char dungeon[DUNGEON_SIZE][DUNGEON_SIZE];
     int bLoc[2], gLoc[2], eLoc[2], mLoc[2];
     char itemChar = '_';
@@ -36,9 +37,6 @@ int main() {
 
     InitializeFPS();
 
-    float prevX = fPlayerX;
-    float prevY = fPlayerY;
-
     wchar_t* screen = new wchar_t[nScreenWidth * nScreenHeight];
     HANDLE hConsole = CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE, 0, nullptr, CONSOLE_TEXTMODE_BUFFER, nullptr);
     if (hConsole == INVALID_HANDLE_VALUE) {
@@ -60,9 +58,13 @@ int main() {
         tp1 = tp2;
         float fElapsedTime = elapsedTime.count();
 
-        UpdatePlayer(fElapsedTime, dungeon, prevX, prevY);
-        checkTile(dungeon, player, monsters, prevX, prevY);
-        RenderFrame(screen, dungeon, hConsole, dwBytesWritten, fElapsedTime);
+        UpdatePlayer(fElapsedTime, dungeon, player);
+        // add combathappened bool
+        checkTile(dungeon, player, monsters, combatHappened);
+        if (combatHappened){
+            combatHappened = false;
+        }
+        RenderFrame(screen, dungeon, hConsole, dwBytesWritten, fElapsedTime, player);
 
         // gameOver cases
         if (GetAsyncKeyState(VK_ESCAPE) & 0x8000)
@@ -83,29 +85,7 @@ int main() {
     // NO character saves. (At this point)
     delete player;
 
+    delete[] screen;
+
     return 0;
 }
-// while invalidName = false
-// gets player character name
-// do{
-// initialize starter dungeon
-// displays instructions in the console.
-// You are entering [name of dungeon]
-// Use WASD to navigate.
-// Avoid BOMBS
-// Pick up GOLD
-// Reach the EXIT
-// Have fun! (press any key to continue)
-// do {
-// displays dungeon
-// minimap, player character as P in middle of dungeon
-// stats on top bar
-// bombs as 1x1x1 B blocks
-// monsters as 1x1x1 M blocks
-// gold as 1x1x1 G blocks
-// exit as 1x1x1 E blocks
-// labyrinthine style walls throughout.
-// automatic forced instakills will not be implemented.
-// you will not encounter a path blocked by a bomb
-// } while (gameOver == false)
-// } while (replay)

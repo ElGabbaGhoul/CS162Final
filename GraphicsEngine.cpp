@@ -39,10 +39,7 @@ void InitializeFPS() {
 }
 
 // Controls
-void UpdatePlayer(float fElapsedTime, const char dungeon[][16], float& prevX, float& prevY) {
-    float prevPosX = fPlayerX;
-    float prevPosY = fPlayerY;
-
+void UpdatePlayer(float fElapsedTime, const char dungeon[][16], Player* player) {
     if (GetAsyncKeyState((unsigned short)'W') & 0x8000) {
         float newX = fPlayerX + sinf(fPlayerA) * 2.5f * fElapsedTime;
         float newY = fPlayerY + cosf(fPlayerA) * 2.5f * fElapsedTime;
@@ -68,65 +65,102 @@ void UpdatePlayer(float fElapsedTime, const char dungeon[][16], float& prevX, fl
     if (GetAsyncKeyState((unsigned short)'D') & 0x8000) {
         fPlayerA += (1.0f) * fElapsedTime;
     }
-
-    prevX = prevPosX;
-    prevY = prevPosY;
 }
 
-void checkTile(char dungeon[][DUNGEON_SIZE], Player* player, Monster* monsters[MONSTER_COUNT], float prevX, float prevY) {
+void checkTile(char dungeon[][DUNGEON_SIZE], Player* player, Monster* monsters[MONSTER_COUNT], bool combatHappened) {
     int x = (int)fPlayerY;
     int y = (int)fPlayerX;
+    int armor = player->getArmor();
     int currentHealth = player->getCurrentHealth();
-    int playerGold = player->getGold();
 
-    int prevPosX = (int)prevX;
-    int prevPosY = (int)prevY;
 
-    if (x != prevPosX || y != prevPosY) {
-        if (dungeon[x][y] == 'B') {
-            currentHealth -= 1;
-            player->setCurrentHealth(currentHealth);
-            dungeon[x][y] = '_';
-        } else if (dungeon[x][y] == 'G') {
-            playerGold += 5;
-            player->setGold(playerGold);
-            dungeon[x][y] = '_';
-        } else if (dungeon[x][y] == 'O' || dungeon[x][y] == 'S' || dungeon[x][y] == 'L') {
-            bool playerHitMonster = false;
-            for (int i = 0; i < MONSTER_COUNT; i++) {
-                if (monsters[i] != nullptr && dungeon[x][y] == monsters[i]->getLetter()) {
-                    // Monster hits the player
-                    int enemyChanceToHit = randRange(0, 10);
-                    if (enemyChanceToHit > 6) {
-                        int damageToPlayer = monsters[i]->getDamage();
-                        if (player->getArmor() > 0) {
-                            player->setArmor(player->getArmor() - damageToPlayer);
-                        } else {
-                            player->setCurrentHealth(player->getCurrentHealth() - damageToPlayer);
-                        }
-                    }
-                    playerHitMonster = true; // Set flag to true
-                }
+
+//        // if Player is in monster cell
+//        if (x >= monsterX && y < monsterY) {
+//            bool monsterTurn = false;
+//            Monster* monsterInCell = getMonsterFromDungeonCoords(dungeon, monsters, x, y);
+//            if (monsterInCell != nullptr && dungeon[x][y] == monsterInCell->getLetter()) {
+//                // set to zero for testing purposes
+//                // int enemyChanceToHit = randRange(0, 10);
+//                //if (enemyChanceToHit > 6){
+//                int damageToPlayer = monsterInCell->getDamage();
+//                if (player->getArmor() > 0){
+//                    player->setArmor(player->getArmor() - damageToPlayer);
+//                } else {
+//                    player->setCurrentHealth(player->getCurrentHealth() - damageToPlayer);
+//                }
+//                // }
+//                /// curly bracket might not have gone here
+//                monsterTurn = true;
+//            }
+//            if (monsterTurn) {
+//                monsterInCell->setHealth(monsterInCell->getHealth() - player->getDamage());
+//                if (monsterInCell->getHealth() <= 0){
+//                    dungeon[x][y] = '_';
+//                    delete monsterInCell;
+//                }
+//            }
+//            combatHappened = true;
+//        }
+
+        // I can;t figure out combat
+        // If I walk in to a monster it whacks me until I die and the game crashes.
+        // Heres what I want to have happen:
+
+            //if monster is on a tile (say, dungeon[4][5])
+            //while (fplayerX is greater than monster->dungeonX
+            // and less than monster->dungeonX + 1
+            // (indicating that the player is in the floating value of dungeon[4][x])
+            //and
+            //fplayerY is greater than monster->dungeonY
+            // and less than monster->dungeonY + 1
+            //(indicating that the player is in the floating value of dungeon[x][5])
+            //combatHappened = true;
+//     }
+
+    for (int i = 0; i < MONSTER_COUNT; ++i) {
+        int monsterX = monsters[i]->getDungeonX();
+        int monsterY = monsters[i]->getDungeonY();
+
+
+    if (dungeon[x][y] == 'B') {
+        player->setCurrentHealth(player->getCurrentHealth() - 1);
+        dungeon[x][y] = '_';
+    } else if (dungeon[x][y] == 'G') {
+        player->setGold(player->getGold() + 5);
+        dungeon[x][y] = '_';
+    } else if (dungeon[x][y] == 'O' ||dungeon[x][y] == 'L' ||dungeon[x][y] == 'S'){
+        bool wasHit = false;
+        while (!wasHit && (x >= monsterX && y < monsterY)){
+            int dented = armor - 1;
+            wasHit = true;
+            player->setArmor(dented);
+            if (armor == 0 && currentHealth > 0){
+                int whacked = currentHealth - 1;
+                player->setCurrentHealth(whacked);
             }
-            if (playerHitMonster) {
-                for (int i = 0; i < MONSTER_COUNT; i++) {
-                    if (monsters[i] != nullptr && dungeon[x][y] == monsters[i]->getLetter()) {
-                        // Player hits the monster
-                        monsters[i]->setHealth(monsters[i]->getHealth() - player->getDamage());
-                        if (monsters[i]->getHealth() <= 0) {
-                            dungeon[x][y] = '_';
-                            delete monsters[i];
-                            monsters[i] = nullptr;
-                        }
-                    }
-                }
-            }
+            dungeon[x][y] = '_';
         }
+    }
     }
 }
 
+// Leftover from attempt at advanced combat system
+//Monster* getMonsterFromDungeonCoords(char dungeon[][DUNGEON_SIZE], Monster* monsters[MONSTER_COUNT], int x, int y){
+//    for (int i = 0; i < DUNGEON_SIZE; i++){
+//        for (int j = 0; j < DUNGEON_SIZE; j++){
+//            if (dungeon[x][y] == dungeon[monsters[i]->getDungeonX()][monsters[i]->getDungeonY()]){
+//                return monsters[i];
+//            }
+//        }
+//    }
+//
+//return nullptr;
+//}
 
-void RenderFrame(wchar_t* screen, const char dungeon[][16], HANDLE hConsole, DWORD& dwBytesWritten, float fElapsedTime) {
+
+
+void RenderFrame(wchar_t* screen, const char dungeon[][16], HANDLE hConsole, DWORD& dwBytesWritten, float fElapsedTime, Player* player) {
     for (int x = 0; x < nScreenWidth; x++) {
         float fRayAngle = (fPlayerA - fFOV / 2.0f) + ((float)x / (float)nScreenWidth) * fFOV;
         float fDistanceToWall = 0;
@@ -193,7 +227,10 @@ void RenderFrame(wchar_t* screen, const char dungeon[][16], HANDLE hConsole, DWO
 
 
 // update to display player gold, stats
-    swprintf_s(screen, 65, L"X=%3.2f, Y=%3.2f, Armor=%d, Health=%d/%d, Gold=%d", fPlayerX, fPlayerY, player->getArmor(), player->getCurrentHealth(), player->getMaxHealth(), player->getGold());
+    swprintf_s(screen, 60,
+               L"fPlayerX=%3.2f, fPlayerY=%3.2f, Armor=%d, Health=%d/%d, Gold=%d",
+               fPlayerX, fPlayerY, player->getArmor(), player->getCurrentHealth(),
+               player->getMaxHealth(), player->getGold());
     for (int nx = 0; nx < nMapHeight; nx++) {
         for (int ny = 0; ny < nMapWidth; ny++) {
             screen[(ny + 1) * nScreenWidth + nx] = dungeon[ny][nx];

@@ -15,9 +15,10 @@
 
 void createDungeon(char dungeon[][DUNGEON_SIZE], int bLoc[2], int gLoc[2], int eLoc[2], int mLoc[2], int bombs, int gold, char itemChar, Monster* monsters[MONSTER_COUNT]){
     for (int i = 0; i < DUNGEON_SIZE; i++){
-        for ( int j = 0; j < DUNGEON_SIZE; j++){
+        for (int j = 0; j < DUNGEON_SIZE; j++){
             if (i == 0 || i == DUNGEON_SIZE - 1 || j == 0 || j == DUNGEON_SIZE - 1) {
-                dungeon[i][j] = '#';
+//                dungeon[i][j] = (char)('A' + (i+j) % 26);
+                  dungeon[i][j] = '#';
             } else {
                 dungeon[i][j] = itemChar;
             }
@@ -41,9 +42,10 @@ void createDungeon(char dungeon[][DUNGEON_SIZE], int bLoc[2], int gLoc[2], int e
         }
 
         genRandCoords(dungeon, mLoc, monsters[i]->getLetter());
+        monsters[i]->setDungeonX(mLoc[0]);
+        monsters[i]->setDungeonY(mLoc[1]);
 
-
-        std::cout << monsters[i]->getType() << std::endl;
+        std::cout << monsters[i]->getType()  << " at tile index of: " << monsters[i]->getDungeonX() << ", " << monsters[i]->getDungeonY() << std::endl;
 
     }
 // Place Gold
@@ -103,15 +105,15 @@ void displayInstructions(){
 std::string generateDungeonName() {
     std::string dungeonName;
 
-    std::string prefixes[] = {"Howling", "Abandoned", "Damned"};
+    std::string prefixes[] = {"Forsaken", "Abandoned", "Cursed"};
 
     std::string nouns[] = {"Cavern", "Mine", "Swamp"};
 
-    std::string suffixes[] = {"Crazed", "Vicious", "Bloodthirsty"};
+    std::string suffixes[] = {"Crazed", "Vicious", "Malevolent"};
 
     std::string enemies[] = {"Cadavers", "Spirits", "Slimes"};
 
-    dungeonName = prefixes[randRange(0,2)] + " " + nouns[randRange(0,2)] + " of the " + suffixes[randRange(0,2)] + " " + enemies[randRange(0,2)] + "!\n" ;
+    dungeonName = "The " + prefixes[randRange(0,2)] + " " + nouns[randRange(0,2)] + " of " + suffixes[randRange(0,2)] + " " + enemies[randRange(0,2)] + "!\n" ;
 
     return dungeonName;
 }
@@ -122,12 +124,12 @@ void genRandCoords(char dungeon[][DUNGEON_SIZE], int coords[2], char itemChar) {
     do {
         x = randRange(1, DUNGEON_SIZE - 1);
         y = randRange(1, DUNGEON_SIZE - 1);
-    } while (dungeon[x][y] != '_');
+    } while (dungeon[y][x] != '_');
 
-        dungeon[x][y] = itemChar;
+        dungeon[y][x] = itemChar;
         coords[0] = x;
         coords[1] = y;
-        std::cout << itemChar << " tiles: " << coords[1] << ", " << coords[0] << std::endl;
+        std::cout << itemChar << " at index: " << coords[0] <<", " << coords[1] << std::endl;
 }
 
 int randRange(int low, int high){
