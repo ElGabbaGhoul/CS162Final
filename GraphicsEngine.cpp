@@ -236,7 +236,7 @@ void RenderFrame(wchar_t* screen, const char dungeon[][16], HANDLE hConsole, DWO
 
 // update to display player gold, stats
     swprintf_s(screen, 60,
-               L"fPlayerX=%3.2f, fPlayerY=%3.2f, Armor=%d, Health=%d/%d, Gold=%d",
+               L"X=%3.2f, Y=%3.2f, Armor=%d, Health=%d/%d, Gold=%d",
                fPlayerX, fPlayerY, player->getArmor(), player->getCurrentHealth(),
                player->getMaxHealth(), player->getGold());
     for (int nx = 0; nx < nMapHeight; nx++) {
