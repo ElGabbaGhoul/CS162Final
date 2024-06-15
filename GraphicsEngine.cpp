@@ -26,6 +26,8 @@ float fDepth = 16.0f;
 
 int bLoc2[2], gLoc2[2], eLoc2[2], mLoc2[2];
 char itemChar2 = '_';
+int currentFloor, currentLevel;
+
 
 void InitializeFPS() {
     if (!GetConsoleWindow()) {
@@ -42,7 +44,7 @@ void InitializeFPS() {
 }
 
 // Controls
-void UpdatePlayer(float fElapsedTime, const char dungeon[][16], Player* player) {
+void UpdatePlayer(float fElapsedTime, const char dungeon[][16]) {
     if (GetAsyncKeyState((unsigned short)'W') & 0x8000) {
         float newX = fPlayerX + sinf(fPlayerA) * 2.5f * fElapsedTime;
         float newY = fPlayerY + cosf(fPlayerA) * 2.5f * fElapsedTime;
@@ -70,58 +72,13 @@ void UpdatePlayer(float fElapsedTime, const char dungeon[][16], Player* player) 
     }
 }
 
-void checkTile(char dungeon[][DUNGEON_SIZE], Player* player, Monster* monsters[MONSTER_COUNT]) {
+void checkTile(char dungeon[][DUNGEON_SIZE], Player* player, Monster* monsters[MONSTER_COUNT], int &floor, int &level) {
     int x = (int)fPlayerY;
     int y = (int)fPlayerX;
     int armor = player->getArmor();
     int currentHealth = player->getCurrentHealth();
 
-
-
-//        // if Player is in monster cell
-//        if (x >= monsterX && y < monsterY) {
-//            bool monsterTurn = false;
-//            Monster* monsterInCell = getMonsterFromDungeonCoords(dungeon, monsters, x, y);
-//            if (monsterInCell != nullptr && dungeon[x][y] == monsterInCell->getLetter()) {
-//                // set to zero for testing purposes
-//                // int enemyChanceToHit = randRange(0, 10);
-//                //if (enemyChanceToHit > 6){
-//                int damageToPlayer = monsterInCell->getDamage();
-//                if (player->getArmor() > 0){
-//                    player->setArmor(player->getArmor() - damageToPlayer);
-//                } else {
-//                    player->setCurrentHealth(player->getCurrentHealth() - damageToPlayer);
-//                }
-//                // }
-//                /// curly bracket might not have gone here
-//                monsterTurn = true;
-//            }
-//            if (monsterTurn) {
-//                monsterInCell->setHealth(monsterInCell->getHealth() - player->getDamage());
-//                if (monsterInCell->getHealth() <= 0){
-//                    dungeon[x][y] = '_';
-//                    delete monsterInCell;
-//                }
-//            }
-//            combatHappened = true;
-//        }
-
-        // I can;t figure out combat
-        // If I walk in to a monster it whacks me until I die and the game crashes.
-        // Heres what I want to have happen:
-
-            //if monster is on a tile (say, dungeon[4][5])
-            //while (fplayerX is greater than monster->dungeonX
-            // and less than monster->dungeonX + 1
-            // (indicating that the player is in the floating value of dungeon[4][x])
-            //and
-            //fplayerY is greater than monster->dungeonY
-            // and less than monster->dungeonY + 1
-            //(indicating that the player is in the floating value of dungeon[x][5])
-            //combatHappened = true;
-//     }
-
-// AAAAAAAAAA I FIGURED IT OUT KINDA
+// AAAAAAAAAA I FIGURED IT OUT
     for (int i = 0; i < MONSTER_COUNT; ++i) {
         int monsterX = monsters[i]->getDungeonX();
         int monsterY = monsters[i]->getDungeonY();
@@ -147,26 +104,25 @@ void checkTile(char dungeon[][DUNGEON_SIZE], Player* player, Monster* monsters[M
         }
     } else if (dungeon[x][y] == 'E'){
         createNextDungeon(dungeon, bLoc2, gLoc2, eLoc2, mLoc2, BOMBS, GOLD, itemChar2, monsters);
-
+        levelIncrementer(floor, level);
     }
-
     }
 }
 
-// Leftover from attempt at advanced combat system
-//Monster* getMonsterFromDungeonCoords(char dungeon[][DUNGEON_SIZE], Monster* monsters[MONSTER_COUNT], int x, int y){
-//    for (int i = 0; i < DUNGEON_SIZE; i++){
-//        for (int j = 0; j < DUNGEON_SIZE; j++){
-//            if (dungeon[x][y] == dungeon[monsters[i]->getDungeonX()][monsters[i]->getDungeonY()]){
-//                return monsters[i];
-//            }
-//        }
-//    }
-//
-//return nullptr;
-//}
+int floorIncrementer(int& floor, int& level){
+    if (level == 9){
+        floor++;
+    }
+    return floor;
+}
 
-
+int levelIncrementer(int& floor, int& level){
+    level++;
+    if (level == 9){
+        floorIncrementer(floor, level);
+    }
+    return level;
+}
 
 void RenderFrame(wchar_t* screen, const char dungeon[][16], HANDLE hConsole, DWORD& dwBytesWritten, float fElapsedTime, Player* player) {
     for (int x = 0; x < nScreenWidth; x++) {
@@ -234,11 +190,13 @@ void RenderFrame(wchar_t* screen, const char dungeon[][16], HANDLE hConsole, DWO
     }
 
 
+
+
 // update to display player gold, stats
-    swprintf_s(screen, 60,
-               L"X=%3.2f, Y=%3.2f, Armor=%d, Health=%d/%d, Gold=%d",
+    swprintf_s(screen, 100,
+               L"X=%3.2f, Y=%3.2f, Armor=%d, Health=%d/%d, Gold=%d, Floor=%d, Level=%d",
                fPlayerX, fPlayerY, player->getArmor(), player->getCurrentHealth(),
-               player->getMaxHealth(), player->getGold());
+               player->getMaxHealth(), player->getGold(), currentFloor, currentLevel);
     for (int nx = 0; nx < nMapHeight; nx++) {
         for (int ny = 0; ny < nMapWidth; ny++) {
             screen[(ny + 1) * nScreenWidth + nx] = dungeon[ny][nx];
@@ -248,3 +206,59 @@ void RenderFrame(wchar_t* screen, const char dungeon[][16], HANDLE hConsole, DWO
     screen[nScreenWidth * nScreenHeight - 1] = '\0';
     WriteConsoleOutputCharacterW(hConsole, screen, nScreenWidth * nScreenHeight, {0, 0}, &dwBytesWritten);
 }
+
+// Residual leftover code that might be useful someday
+// Leftover from attempt at advanced combat system
+//Monster* getMonsterFromDungeonCoords(char dungeon[][DUNGEON_SIZE], Monster* monsters[MONSTER_COUNT], int x, int y){
+//    for (int i = 0; i < DUNGEON_SIZE; i++){
+//        for (int j = 0; j < DUNGEON_SIZE; j++){
+//            if (dungeon[x][y] == dungeon[monsters[i]->getDungeonX()][monsters[i]->getDungeonY()]){
+//                return monsters[i];
+//            }
+//        }
+//    }
+//
+//return nullptr;
+//}
+//        // if Player is in monster cell
+//        if (x >= monsterX && y < monsterY) {
+//            bool monsterTurn = false;
+//            Monster* monsterInCell = getMonsterFromDungeonCoords(dungeon, monsters, x, y);
+//            if (monsterInCell != nullptr && dungeon[x][y] == monsterInCell->getLetter()) {
+//                // set to zero for testing purposes
+//                // int enemyChanceToHit = randRange(0, 10);
+//                //if (enemyChanceToHit > 6){
+//                int damageToPlayer = monsterInCell->getDamage();
+//                if (player->getArmor() > 0){
+//                    player->setArmor(player->getArmor() - damageToPlayer);
+//                } else {
+//                    player->setCurrentHealth(player->getCurrentHealth() - damageToPlayer);
+//                }
+//                // }
+//                /// curly bracket might not have gone here
+//                monsterTurn = true;
+//            }
+//            if (monsterTurn) {
+//                monsterInCell->setHealth(monsterInCell->getHealth() - player->getDamage());
+//                if (monsterInCell->getHealth() <= 0){
+//                    dungeon[x][y] = '_';
+//                    delete monsterInCell;
+//                }
+//            }
+//            combatHappened = true;
+//        }
+
+// I can;t figure out combat
+// If I walk in to a monster it whacks me until I die and the game crashes.
+// Heres what I want to have happen:
+
+//if monster is on a tile (say, dungeon[4][5])
+//while (fplayerX is greater than monster->dungeonX
+// and less than monster->dungeonX + 1
+// (indicating that the player is in the floating value of dungeon[4][x])
+//and
+//fplayerY is greater than monster->dungeonY
+// and less than monster->dungeonY + 1
+//(indicating that the player is in the floating value of dungeon[x][5])
+//combatHappened = true;
+//     }

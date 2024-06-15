@@ -14,10 +14,10 @@ Player* player;
 // Elyra
 
 int main() {
-    bool combatHappened = false;
     char dungeon[DUNGEON_SIZE][DUNGEON_SIZE];
     int bLoc[2], gLoc[2], eLoc[2], mLoc[2];
     char itemChar = '_';
+    int currentFloor, currentLevel = 1;
 
     player = new Player("Player1", 5, 2, 3, 3, 0);
 
@@ -29,9 +29,9 @@ int main() {
 
 
     std::cout << "Greetings, " << player->getName() << ".\n" << std::endl;
-    //twoSecPause();
+    twoSecPause();
     std::cout << "\n";
-    createDungeon(dungeon, bLoc, gLoc, eLoc, mLoc, BOMBS, GOLD, itemChar, monsters);
+    createDungeon(dungeon, bLoc, gLoc, eLoc, mLoc, BOMBS, GOLD, itemChar, monsters, playerName);
     displayDungeon(dungeon);
     system("pause");
 
@@ -58,8 +58,8 @@ int main() {
         tp1 = tp2;
         float fElapsedTime = elapsedTime.count();
 
-        UpdatePlayer(fElapsedTime, dungeon, player);
-        checkTile(dungeon, player, monsters);
+        UpdatePlayer(fElapsedTime, dungeon);
+        checkTile(dungeon, player, monsters, currentFloor, currentLevel);
 
         RenderFrame(screen, dungeon, hConsole, dwBytesWritten, fElapsedTime, player);
 

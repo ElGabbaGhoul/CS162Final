@@ -13,11 +13,12 @@
 
 
 
-void createDungeon(char dungeon[][DUNGEON_SIZE], int bLoc[2], int gLoc[2], int eLoc[2], int mLoc[2], int bombs, int gold, char itemChar, Monster* monsters[MONSTER_COUNT]){
+void createDungeon(char dungeon[][DUNGEON_SIZE], int bLoc[2], int gLoc[2], int eLoc[2], int mLoc[2], int bombs, int gold, char itemChar, Monster* monsters[MONSTER_COUNT], std::string playerName){
     for (int i = 0; i < DUNGEON_SIZE; i++){
         for (int j = 0; j < DUNGEON_SIZE; j++){
             if (i == 0 || i == DUNGEON_SIZE - 1 || j == 0 || j == DUNGEON_SIZE - 1) {
-                  dungeon[i][j] = '#';
+
+                dungeon[i][j] = '#';
             } else {
                 dungeon[i][j] = itemChar;
             }
@@ -39,12 +40,9 @@ void createDungeon(char dungeon[][DUNGEON_SIZE], int bLoc[2], int gLoc[2], int e
         } else {
             monsters[i] = new Ghost();
         }
-
         genRandCoords(dungeon, mLoc, monsters[i]->getLetter());
         monsters[i]->setDungeonX(mLoc[0]);
         monsters[i]->setDungeonY(mLoc[1]);
-
-
     }
 // Place Gold
     for (int i = 0; i < gold; i++){
@@ -54,9 +52,9 @@ void createDungeon(char dungeon[][DUNGEON_SIZE], int bLoc[2], int gLoc[2], int e
     genRandCoords(dungeon, eLoc, 'E');
 
     std::string dungeonName = generateDungeonName();
-    displayInstructions();
+    displayInstructions(playerName);
     std::cout << "Dungeon Created! Now prepare yourself to face..." << std::endl;
-    //twoSecPause();
+    twoSecPause();
     std::cout << dungeonName << std::endl;
 }
 
@@ -86,12 +84,9 @@ void createNextDungeon(char dungeon[][DUNGEON_SIZE], int bLoc[2], int gLoc[2], i
         } else {
             monsters[i] = new Ghost();
         }
-
         genRandCoords(dungeon, mLoc, monsters[i]->getLetter());
         monsters[i]->setDungeonX(mLoc[0]);
         monsters[i]->setDungeonY(mLoc[1]);
-
-
     }
 // Place Gold
     for (int i = 0; i < gold; i++){
@@ -114,22 +109,39 @@ void displayDungeon(char dungeon[][DUNGEON_SIZE]){
 std::string getCharName() {
     std::string player;
     bool validIn = false;
-    std::cout << "Greetings traveler, what is your name?" << std::endl;
-    std::cin >> player;
 
     while (!validIn) {
-        if (std::cin.fail()) {
-            std::cin.clear();
-            std::cin.ignore(40000, '\n');
-            std::cout << "Please enter a name with at least 3 characters." << std::endl;
-        } else {
-            validIn = true;
+        std::cout << "Greetings traveler, what is your name?" << std::endl;
+        std::cin >> player;
+
+        if (!player.empty()){
+            if (!isAllChars(player)){
+                std::cin.clear();
+                std::cin.ignore(50000, '\n');
+                std::cerr << "Error: No special characters in your name please."<< std::endl;
+                std::cerr << "Your first name should be Alpha only (A-Z, a-z)." << std::endl;
+            } else {
+                for (char &c: player){
+                    c = std::tolower(static_cast<unsigned char>(c));
+                }
+                player[0] = std::toupper(static_cast<unsigned char>(player[0]));
+                validIn = true;
+            }
         }
     }
     return player;
 }
 
-void displayInstructions(){
+bool isAllChars(const std::string &str) {
+    for (char c : str) {
+        if (!std::isalpha(c)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+void displayInstructions(std::string& playerName){
     std::cout << "Press ESC at any time to close the game!\n" << std::endl;
     oneSecPause();
     std::cout << "Use WASD to walk around the dungeon!\n" << std::endl;
@@ -138,7 +150,9 @@ void displayInstructions(){
     oneSecPause();
     std::cout << "Navigate to the exit!\n" << std::endl;
     oneSecPause();
-    std::cout << "Purchase upgrades on sanctuary levels!\n" << std::endl;
+    std::cout << "Purchase upgrades on sanctuary levels! (Coming Soon!)\n" << std::endl;
+    oneSecPause();
+    std::cout << "How far can YOU go, "<< playerName << "!?\n" << std::endl;
     oneSecPause();
 }
 
@@ -164,12 +178,11 @@ void genRandCoords(char dungeon[][DUNGEON_SIZE], int coords[2], char itemChar) {
     do {
         x = randRange(1, DUNGEON_SIZE - 1);
         y = randRange(1, DUNGEON_SIZE - 1);
-    } while (dungeon[y][x] != '_');
+    } while (dungeon[y][x] != '_' && (x != 1 && y != 1));
 
         dungeon[y][x] = itemChar;
         coords[0] = x;
         coords[1] = y;
-//        std::cout << itemChar << " at index: " << coords[0] <<", " << coords[1] << std::endl;
 }
 
 int randRange(int low, int high){
@@ -184,5 +197,5 @@ void twoSecPause(){
 }
 
 void oneSecPause(){
-    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 }

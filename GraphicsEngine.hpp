@@ -27,10 +27,11 @@ extern float fFOV;
 extern float fDepth;
 
 void InitializeFPS();
-void UpdatePlayer(float fElapsedTime, const char dungeon[][16], Player* player);
-void checkTile(char dungeon[][DUNGEON_SIZE], Player* playerPtr, Monster* monsArr[MONSTER_COUNT]);
+void UpdatePlayer(float fElapsedTime, const char dungeon[][16]);
+void checkTile(char dungeon[][DUNGEON_SIZE], Player* playerPtr, Monster* monsArr[MONSTER_COUNT], int &floor, int &level);
 void RenderFrame(wchar_t* screen, const char dungeon[][16], HANDLE hConsole, DWORD& dwBytesWritten, float fElapsedTime, Player* player);
-//Monster* getMonsterFromDungeonCoords(char dungeon[][DUNGEON_SIZE], Monster* monsters[MONSTER_COUNT], int x, int y);
+int floorIncrementer(int& floor, int& level);
+int levelIncrementer(int& floor, int& level);
 
 
 #endif //CSFINAL_GRAPHICSENGINE_HPP

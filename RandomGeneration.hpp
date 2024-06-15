@@ -17,12 +17,13 @@ const int GOLD = 4;
 class Monster;
 
 
-void createDungeon(char dungeon[][DUNGEON_SIZE], int bLoc[2], int gLoc[2], int eLoc[2], int mLoc[2], int bombs, int gold, char itemChar, Monster* monsArr[]);
+void createDungeon(char dungeon[][DUNGEON_SIZE], int bLoc[2], int gLoc[2], int eLoc[2], int mLoc[2], int bombs, int gold, char itemChar, Monster* monsArr[], std::string playerName);
 void createNextDungeon(char dungeon[][DUNGEON_SIZE], int bLoc[2], int gLoc[2], int eLoc[2], int mLoc[2], int bombs, int gold, char itemChar, Monster* monsters[MONSTER_COUNT]);
+bool isAllChars(const std::string &str);
 void displayDungeon(char dungeon[][DUNGEON_SIZE]);
 std::string getCharName();
 std::string generateDungeonName();
-void displayInstructions();
+void displayInstructions(std::string& playerName);
 void genRandCoords(char dungeon[][DUNGEON_SIZE], int coords[2], char itemChar);
 int randRange(int low, int high);
 void twoSecPause();
