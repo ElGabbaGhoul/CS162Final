@@ -26,8 +26,6 @@ float fDepth = 16.0f;
 
 int bLoc2[2], gLoc2[2], eLoc2[2], mLoc2[2];
 char itemChar2 = '_';
-int currentFloor, currentLevel;
-
 
 void InitializeFPS() {
     if (!GetConsoleWindow()) {
@@ -72,7 +70,7 @@ void UpdatePlayer(float fElapsedTime, const char dungeon[][16]) {
     }
 }
 
-void checkTile(char dungeon[][DUNGEON_SIZE], Player* player, Monster* monsters[MONSTER_COUNT], int &floor, int &level) {
+void checkTile(char dungeon[][DUNGEON_SIZE], Player* player, Monster* monsters[MONSTER_COUNT]) {
     int x = (int)fPlayerY;
     int y = (int)fPlayerX;
     int armor = player->getArmor();
@@ -104,24 +102,8 @@ void checkTile(char dungeon[][DUNGEON_SIZE], Player* player, Monster* monsters[M
         }
     } else if (dungeon[x][y] == 'E'){
         createNextDungeon(dungeon, bLoc2, gLoc2, eLoc2, mLoc2, BOMBS, GOLD, itemChar2, monsters);
-        levelIncrementer(floor, level);
     }
     }
-}
-
-int floorIncrementer(int& floor, int& level){
-    if (level == 9){
-        floor++;
-    }
-    return floor;
-}
-
-int levelIncrementer(int& floor, int& level){
-    level++;
-    if (level == 9){
-        floorIncrementer(floor, level);
-    }
-    return level;
 }
 
 void RenderFrame(wchar_t* screen, const char dungeon[][16], HANDLE hConsole, DWORD& dwBytesWritten, float fElapsedTime, Player* player) {
@@ -194,9 +176,11 @@ void RenderFrame(wchar_t* screen, const char dungeon[][16], HANDLE hConsole, DWO
 
 // update to display player gold, stats
     swprintf_s(screen, 100,
-               L"X=%3.2f, Y=%3.2f, Armor=%d, Health=%d/%d, Gold=%d, Floor=%d, Level=%d",
+               L"X=%3.2f, Y=%3.2f, Armor=%d, Health=%d/%d, Gold=%d",
                fPlayerX, fPlayerY, player->getArmor(), player->getCurrentHealth(),
-               player->getMaxHealth(), player->getGold(), currentFloor, currentLevel);
+               player->getMaxHealth(), player->getGold()
+               //, currentFloor, currentLevel
+               );
     for (int nx = 0; nx < nMapHeight; nx++) {
         for (int ny = 0; ny < nMapWidth; ny++) {
             screen[(ny + 1) * nScreenWidth + nx] = dungeon[ny][nx];

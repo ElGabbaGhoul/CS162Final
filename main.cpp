@@ -1,3 +1,14 @@
+/*
+Final Project
+Name: Scott "Marble" Nideffer
+Date: 06/02/2024
+IDE: Clion
+Version: 1.0
+Description: An expansion on the single-player dungeon crawler lab.
+Now with a visual upgrade!
+Pick up gold, avoid bombs, punch monsters, find the exit, repeat!
+*/
+
 #include <iostream>
 #include <Windows.h>
 #include <chrono>
@@ -7,17 +18,10 @@
 
 Player* player;
 
-// "Draxon's Dungeon"
-
-// Axel
-// Draxon
-// Elyra
-
 int main() {
     char dungeon[DUNGEON_SIZE][DUNGEON_SIZE];
     int bLoc[2], gLoc[2], eLoc[2], mLoc[2];
     char itemChar = '_';
-    int currentFloor, currentLevel = 1;
 
     player = new Player("Player1", 5, 2, 3, 3, 0);
 
@@ -59,8 +63,7 @@ int main() {
         float fElapsedTime = elapsedTime.count();
 
         UpdatePlayer(fElapsedTime, dungeon);
-        checkTile(dungeon, player, monsters, currentFloor, currentLevel);
-
+        checkTile(dungeon, player, monsters);
         RenderFrame(screen, dungeon, hConsole, dwBytesWritten, fElapsedTime, player);
 
         // gameOver cases
